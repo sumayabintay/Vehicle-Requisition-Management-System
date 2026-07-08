@@ -5,8 +5,7 @@ const jwt = require("jsonwebtoken");
 const registerUser = (req, res) => {
   const { name, email, password, role } = req.body;
 
-  const sql =
-    "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+  const sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
 
   connection.query(
     sql,
@@ -50,13 +49,15 @@ const loginUser = (req, res) => {
 
     const user = results[0];
 
-    if (user.password !== password) {
+    // Direct plain text password comparison
+    if (password !== user.password) {
       return res.status(401).json({
         success: false,
         message: "Invalid Password",
       });
     }
 
+    // Generate JWT Token if password matches
     const token = jwt.sign(
       {
         id: user.id,
